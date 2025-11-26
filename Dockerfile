@@ -1,11 +1,21 @@
-FROM debian:11
+FROM debian:12
 
-LABEL org.opencontainers.image.description="Imatge corregida per proves amb Trivy"
+LABEL org.opencontainers.image.description="Imatge corregida i segura per proves amb Trivy"
 
 RUN apt-get update && \
-    apt-get install -y curl openssl apache2 python3 ca-certificates && \
+    apt-get upgrade -y && \
+    apt-get install -y \
+        curl \
+        openssl \
+        apache2 \
+        python3 \
+        ca-certificates \
+        libc6 \
+        libc-bin && \
     rm -f /etc/ssl/private/ssl-cert-snakeoil.key \
           /etc/ssl/certs/ssl-cert-snakeoil.pem && \
-    apt-get clean && rm -rf /var/lib/apt/lists/*
+    apt-get autoremove -y && \
+    apt-get clean && \
+    rm -rf /var/lib/apt/lists/*
 
-CMD echo "✅ Imatge corregida i neta segons Trivy" && apache2 -v && openssl version
+CMD echo "✅ Imatge segura i revisada" && apache2 -v && openssl version
